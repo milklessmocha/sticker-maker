@@ -53,17 +53,44 @@ Log out and back in so the group change applies, then confirm:
 docker run --rm hello-world
 ```
 
-## 3. Copy the project up
+## 3. Get the code onto the server
 
-From your Mac, in the project directory:
+### Option A — clone from GitHub (preferred: `git pull` updates later)
+
+The repo is private, so the server needs its own read access. Generate a key on
+the **server** and register it as a read-only deploy key — narrower than reusing
+your personal SSH key, and revocable on its own:
+
+```bash
+ssh-keygen -t ed25519 -C "sticker-maker-vps" -f ~/.ssh/id_ed25519 -N "" && cat ~/.ssh/id_ed25519.pub
+```
+
+Paste that public key into GitHub → the repo → Settings → Deploy keys → *Add
+deploy key*. Leave "Allow write access" unchecked. Then:
+
+```bash
+git clone git@github.com:milklessmocha/sticker-maker.git ~/sticker-maker
+```
+
+### Option B — rsync from your Mac (no GitHub auth needed)
 
 ```bash
 rsync -av --exclude .venv --exclude .git --exclude data --exclude __pycache__ ./ ubuntu@YOUR_SERVER_IP:~/sticker-maker/
 ```
 
-That carries your `.env` over SSH along with the code. If you would rather not
-copy the secret, exclude it too and write `.env` on the server by hand — only
-`BOT_TOKEN` and `ALLOWED_USER_ID` are required.
+This one carries your local `.env` along with the code, so you can skip the next
+step if you use it.
+
+### Create `.env` on the server
+
+`.env` is gitignored and never leaves your machine, so a clone has no config.
+Only two values are required:
+
+```bash
+cd ~/sticker-maker && printf 'BOT_TOKEN=%s\nALLOWED_USER_ID=%s\n' 'PASTE_TOKEN' 'YOUR_TELEGRAM_ID' > .env && chmod 600 .env
+```
+
+See `.env.example` for every other knob and what it does.
 
 ## 4. Build and start
 
