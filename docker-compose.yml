@@ -1,0 +1,37 @@
+services:
+  sticker-bot:
+    build:
+      context: .
+      args:
+        # Bakes the same model the app will load, so nothing downloads at runtime.
+        REMBG_MODEL: ${REMBG_MODEL:-u2net}
+    image: sticker-maker:latest
+    container_name: sticker-maker
+    restart: unless-stopped
+    init: true
+
+    env_file:
+      - .env
+    environment:
+      # Container paths win over whatever .env says.
+      DATA_DIR: /data
+      U2NET_HOME: /models
+
+    volumes:
+      # Keeps settings.json (per-user default output format) across restarts.
+      # The container runs as uid 1000, so on the host:
+      #   mkdir -p data && sudo chown 1000:1000 data
+      - ./data:/data
+      # /models is baked into the image — mount a volume here only if you switch
+      # REMBG_MODEL and want the download cached between rebuilds.
+
+    # The bot talks to Telegram over long polling: no ports to publish.
+
+    # u2net peaks around 1 GB; 4 GB leaves plenty of headroom on a 24 GB A1.
+    mem_limit: 4g
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

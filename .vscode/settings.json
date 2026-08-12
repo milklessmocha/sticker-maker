@@ -1,0 +1,11 @@
+{
+    "python-envs.defaultEnvManager": "ms-python.python:venv",
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}"
+    ],
+    "python.terminal.activateEnvironment": true,
+    // config.py loads .env via python-dotenv, so VS Code does not need to
+    // inject it. Leaving this off also keeps BOT_TOKEN out of every terminal.
+    "python.terminal.useEnvFile": false
+}

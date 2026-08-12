@@ -1,0 +1,14 @@
+# Local development install:
+#     uv pip install -r requirements-dev.txt
+#
+# Same stack as production, plus one pin that only matters on Intel macOS.
+-r requirements.txt
+
+# rembg -> pymatting -> numba -> llvmlite. llvmlite stopped publishing
+# x86_64 macOS wheels after 0.45.1, and building it from source needs a full
+# LLVM toolchain. numba 0.62.1 is the last release with an Intel-Mac wheel, and
+# pinning it keeps llvmlite on 0.45.1.
+#
+# Linux (the deployment target, arm64 or amd64) has manylinux wheels for the
+# whole chain, so requirements.txt deliberately leaves numba unpinned.
+numba==0.62.1

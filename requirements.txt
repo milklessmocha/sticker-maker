@@ -1,0 +1,17 @@
+# Python 3.11+
+aiogram>=3.15,<4
+
+# Background removal. The [cpu] extra pulls in onnxruntime (ARM64 wheels exist)
+# plus opencv-python-headless, scipy and scikit-image.
+rembg[cpu]>=2.0.59,<3
+
+Pillow>=10.3,<12
+python-dotenv>=1.0
+
+# Already transitive deps of rembg, pinned here because processor.py imports
+# them directly for the outline dilation.
+numpy>=1.26
+opencv-python-headless>=4.9
+
+# Optional but handy: lets iPhone .heic/.heif uploads decode.
+pillow-heif>=0.16

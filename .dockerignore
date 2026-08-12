@@ -1,0 +1,11 @@
+.git
+.gitignore
+.idea
+.venv
+venv
+__pycache__
+*.pyc
+.env
+data
+CLAUDE.md
+LICENSE
